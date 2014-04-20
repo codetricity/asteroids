@@ -162,6 +162,10 @@ rock_delay = 1500
 
 score = Score()
 
+ship_min_brake = 8
+ship_speed_brake = ship_min_brake
+
+
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -178,6 +182,8 @@ while True:
                 radius = radius + 10
             if event.key == K_UP:
                 forward = True
+                thurst_start = pygame.time.get_ticks()
+                ship_speed_brake = ship_min_brake
                 fume = True
             if event.key == K_SPACE:
                 fire = True
@@ -213,8 +219,8 @@ while True:
     y_3 = int(center[1] - length_y_3)
     
 ###
-    length_x_motion = math.cos(radian_angle) * radius / 8
-    length_y_motion = math.sin(radian_angle) * radius / 8
+    length_x_motion = math.cos(radian_angle) * radius / ship_speed_brake
+    length_y_motion = math.sin(radian_angle) * radius / ship_speed_brake
     x_motion = int(center[0] + length_x_motion)
     y_motion = int(center[1] - length_y_motion)
      
@@ -255,6 +261,8 @@ while True:
     
     ship_rect = pygame.Rect(0, 0, radius * 1.5, radius * 1.5)
     ship_rect.center = center
+
+
     
     pygame.draw.circle(windowSurface, RED, (x_motion, y_motion), size / 2)
 
@@ -273,7 +281,13 @@ while True:
         angle = angle - 3
         
     if forward == True:
-        center = [x_motion, y_motion]
+        thrust_elapsed = pygame.time.get_ticks() - thurst_start
+        if thrust_elapsed < 10000:
+            center = [x_motion, y_motion]
+            if thrust_elapsed > 3000:
+                ship_speed_brake = 14
+            if thrust_elapsed > 7000:
+                ship_speed_brake = 20
         
     if fume == True:
         pygame.draw.circle(windowSurface, ORANGE, (thrust_x, thrust_y), size, 2)
@@ -313,7 +327,8 @@ while True:
     for rock in rock_group:
         if ship_rect.colliderect(rock.rect):
             windowSurface.fill((255, 0, 0))
-            print("ship is hit!")
+            score.points = 0
+
     
     clock.tick(FPS)
     pygame.display.update()
