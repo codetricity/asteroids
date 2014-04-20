@@ -58,23 +58,26 @@ class Bullet(pygame.sprite.Sprite):
 
         
 class Rock(pygame.sprite.Sprite):
-    def __init__(self, size = [50, 50]):
+    def __init__(self, size = 100):
         pygame.sprite.Sprite.__init__(self)
         self.size = size
         self.speed = 1
         self.direction = random.choice(["right", "left", "up", "down", "rightup",
                                         "rightdown", "leftup", "leftdown"])
-        self.center = [self.size[0]/2, self.size[1]/2]
+        self.center = [self.size/2, self.size/2]
         self.screencenter = [800/2, 600/2]
-        self.image = pygame.Surface(self.size)
+        self.image = pygame.Surface((self.size, self.size))
         self.safe_zone = 150
         self.draw()
         self.place()
 
     def draw(self):
-        self.rect = pygame.draw.circle(self.image, (0, 255, 0), (25, 25), 25, 1)
-        pygame.draw.circle(self.image, (200, 15, 0), (25, 25), 20, 1)
-        pygame.draw.circle(self.image, (200, 15, 100), (25, 25), 10, 1)
+        self.rect = pygame.draw.circle(self.image, (0, 255, 0), self.center,
+                                       self.size/2, 1)
+        pygame.draw.circle(self.image, (200, 15, 0), self.center, 
+                           int(.8 * self.size/2), 1)
+        pygame.draw.circle(self.image, (200, 15, 100), self.center, 
+                           int(.5 * self.size/2), 1)
     
     def place(self):
         self.rect.center = (random.randrange(0, 800),
@@ -320,14 +323,30 @@ while True:
             if bullet.rect.centery - 200 < bullet.orig_center[1]:
                 bullet_group.remove(bullet)
 
-    rocks_hit = pygame.sprite.groupcollide(bullet_group, rock_group, True, True)
-    if len(rocks_hit) > 0:
-        score.points = score.points + len(rocks_hit)
+    # rocks_hit = pygame.sprite.groupcollide(bullet_group, rock_group, True, True)
+    # if len(rocks_hit) > 0:
+    #     score.points = score.points + len(rocks_hit)
+        
 
     for rock in rock_group:
         if ship_rect.colliderect(rock.rect):
             windowSurface.fill((255, 0, 0))
             score.points = 0
+        for bullet in bullet_group:
+            if bullet.rect.colliderect(rock.rect):
+                bullet_group.remove(bullet)
+                score.points = score.points + 1
+                if rock.size > 20:
+                    new_rock = Rock(rock.size/2)
+                    new_rock.rect.center = rock.rect.center
+                    rock_group.add(new_rock)
+                    new_rock = Rock(rock.size/2)
+                    new_rock.rect.center = rock.rect.center
+                    rock_group.add(new_rock)
+
+                rock_group.remove(rock)
+
+
 
     
     clock.tick(FPS)
