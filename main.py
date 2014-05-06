@@ -23,10 +23,10 @@ RED = ((255, 0, 0))
 GREEN = ((0, 255, 0))
 ORANGE = ((254, 158, 27))
 center = [400, 300]
-size = 10
+fume_size = 8
 angle = 0
 WHITE = ((255, 255, 255))
-radius = 50
+radius = 20
 
 screen_size = (800, 600)
 windowSurface = pygame.display.set_mode(screen_size)
@@ -54,7 +54,7 @@ score = Score()
 ship_min_brake = 8
 ship_speed_brake = ship_min_brake
 
-controller = controls.Draw()
+controller = controls.Draw(screen_size)
 
 
 while True:
@@ -63,36 +63,11 @@ while True:
             android.wait_for_resume()
 
     for event in pygame.event.get():
-        if event.type == QUIT:
+        if event.type == QUIT or (event.type == KEYDOWN and
+                                          event.key == K_ESCAPE):
             pygame.quit()
             sys.exit()
-        if event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
-                pygame.quit()
-                sys.exit()
-            # if event.key == K_RIGHT:
-            #     direction = "right"
-            # if event.key == K_LEFT:
-            #     direction = "left"
-            # if event.key == K_s:
-            #     radius = radius - 10
-            # if event.key == K_l:
-            #     radius = radius + 10
-            # if event.key == K_UP:
-            #     forward = True
-            #     thrust_start = pygame.time.get_ticks()
-            #     ship_speed_brake = ship_min_brake
-            #     fume = True
-            # if event.key == K_SPACE:
-            #     fire = True
-        # if event.type == KEYUP:
-        #     if event.key == K_UP:
-        #         # forward = False
-        #         fume = False
-        #     if event.key == K_RIGHT:
-        #         direction = "stop"
-        #     if event.key == K_LEFT:
-        #         direction = "stop"
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             if controller.left_pos.collidepoint(pos):
@@ -162,7 +137,7 @@ while True:
     windowSurface.blit(score.image, (10, 10))
 
     controller.update()
-    windowSurface.blit(controller.menu_bar, (100, 500))
+    windowSurface.blit(controller.menu_bar, (100, screen_size[1] - 250))
     
     rock_group.update()
     rock_current_time =  pygame.time.get_ticks() - rock_start
@@ -182,7 +157,7 @@ while True:
 
 
     
-    pygame.draw.circle(windowSurface, RED, (x_motion, y_motion), size / 2)
+    pygame.draw.circle(windowSurface, RED, (x_motion, y_motion), fume_size / 2)
 
     
     bullet_group.update()
@@ -206,7 +181,7 @@ while True:
                 ship_speed_brake = 20
         
     if fume == True:
-        pygame.draw.circle(windowSurface, ORANGE, (thrust_x, thrust_y), size, 2)
+        pygame.draw.circle(windowSurface, ORANGE, (thrust_x, thrust_y), fume_size, 2)
         
     if center[0] > screen_size[0]:
         center[0] = 0
