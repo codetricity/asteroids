@@ -5,7 +5,7 @@ from pygame.locals import *
 from bullet import *
 from rock import *
 from score import *
-
+import controls
 
 pygame.init()
 
@@ -45,6 +45,8 @@ score = Score()
 ship_min_brake = 8
 ship_speed_brake = ship_min_brake
 
+controller = controls.Draw()
+
 
 while True:
     for event in pygame.event.get():
@@ -62,7 +64,7 @@ while True:
                 radius = radius + 10
             if event.key == K_UP:
                 forward = True
-                thurst_start = pygame.time.get_ticks()
+                thrust_start = pygame.time.get_ticks()
                 ship_speed_brake = ship_min_brake
                 fume = True
             if event.key == K_SPACE:
@@ -75,6 +77,23 @@ while True:
                 direction = "stop"
             if event.key == K_LEFT:
                 direction = "stop"
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            if controller.left_pos.collidepoint(pos):
+                direction = "left"
+            elif controller.right_pos.collidepoint(pos):
+                direction = "right"
+            elif controller.thrust_pos.collidepoint(pos):
+                forward = True
+                thrust_start = pygame.time.get_ticks()
+                ship_speed_brake = ship_min_brake
+                fume = True
+            elif controller.fire_pos.collidepoint(pos):
+                fire = True
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            direction = "stop"
+            fume = False
             
     
     radian_angle = math.radians(angle)
@@ -125,6 +144,9 @@ while True:
 
     score.update()
     windowSurface.blit(score.image, (10, 10))
+
+    controller.update()
+    windowSurface.blit(controller.menu_bar, (100, 500))
     
     rock_group.update()
     rock_current_time =  pygame.time.get_ticks() - rock_start
@@ -150,9 +172,7 @@ while True:
     bullet_group.update()
     bullet_group.draw(windowSurface)
     
-    
-    
-    
+
     if angle >= 360:
         angle = 0
     if direction == "left":
@@ -161,7 +181,7 @@ while True:
         angle = angle - 3
         
     if forward == True:
-        thrust_elapsed = pygame.time.get_ticks() - thurst_start
+        thrust_elapsed = pygame.time.get_ticks() - thrust_start
         if thrust_elapsed < 10000:
             center = [x_motion, y_motion]
             if thrust_elapsed > 3000:
