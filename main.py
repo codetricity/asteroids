@@ -59,7 +59,7 @@ controller = controls.Draw()
 
 while True:
     if android:
-        if android.check_pause:
+        if android.check_pause():
             android.wait_for_resume()
 
     for event in pygame.event.get():
@@ -70,29 +70,29 @@ while True:
             if event.key == K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-            if event.key == K_RIGHT:
-                direction = "right"
-            if event.key == K_LEFT:
-                direction = "left"
-            if event.key == K_s:
-                radius = radius - 10
-            if event.key == K_l:
-                radius = radius + 10
-            if event.key == K_UP:
-                forward = True
-                thrust_start = pygame.time.get_ticks()
-                ship_speed_brake = ship_min_brake
-                fume = True
-            if event.key == K_SPACE:
-                fire = True
-        if event.type == KEYUP:
-            if event.key == K_UP:
-                # forward = False
-                fume = False
-            if event.key == K_RIGHT:
-                direction = "stop"
-            if event.key == K_LEFT:
-                direction = "stop"
+            # if event.key == K_RIGHT:
+            #     direction = "right"
+            # if event.key == K_LEFT:
+            #     direction = "left"
+            # if event.key == K_s:
+            #     radius = radius - 10
+            # if event.key == K_l:
+            #     radius = radius + 10
+            # if event.key == K_UP:
+            #     forward = True
+            #     thrust_start = pygame.time.get_ticks()
+            #     ship_speed_brake = ship_min_brake
+            #     fume = True
+            # if event.key == K_SPACE:
+            #     fire = True
+        # if event.type == KEYUP:
+        #     if event.key == K_UP:
+        #         # forward = False
+        #         fume = False
+        #     if event.key == K_RIGHT:
+        #         direction = "stop"
+        #     if event.key == K_LEFT:
+        #         direction = "stop"
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             if controller.left_pos.collidepoint(pos):
@@ -243,7 +243,7 @@ while True:
 
     for rock in rock_group:
         if ship_rect.colliderect(rock.rect):
-            windowSurface.fill((255, 0, 0))
+           # windowSurface.fill((255, 0, 0))
             score.points = 0
         for bullet in bullet_group:
             if bullet.rect.colliderect(rock.rect):
