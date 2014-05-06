@@ -7,6 +7,15 @@ from rock import *
 from score import *
 import controls
 
+try:
+    import android
+except ImportError:
+    android = None
+
+if android:
+    android.init()
+    android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
+
 pygame.init()
 
 
@@ -49,11 +58,18 @@ controller = controls.Draw()
 
 
 while True:
+    if android:
+        if android.check_pause:
+            android.wait_for_resume()
+
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
         if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                pygame.quit()
+                sys.exit()
             if event.key == K_RIGHT:
                 direction = "right"
             if event.key == K_LEFT:
