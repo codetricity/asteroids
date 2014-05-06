@@ -27,6 +27,7 @@ fume_size = 8
 angle = 0
 WHITE = ((255, 255, 255))
 radius = 20
+rock_delay = 3000
 
 screen_size = (800, 600)
 windowSurface = pygame.display.set_mode(screen_size)
@@ -47,7 +48,7 @@ rock_group = pygame.sprite.Group()
 rock = Rock()
 rock_group.add(rock)
 rock_start = pygame.time.get_ticks()
-rock_delay = 1500
+
 
 score = Score()
 
@@ -126,19 +127,24 @@ while True:
     
 
     windowSurface.fill((0, 0, 0))
-    
-    #pygame.draw.circle(windowSurface, RED, center, size)
-    #pygame.draw.circle(windowSurface, GREEN, (x, y), size)
-    #pygame.draw.circle(windowSurface, GREEN, (x_2, y_2), size)
-    #pygame.draw.circle(windowSurface, GREEN, (x_3, y_3), size)
-    #
 
     score.update()
     windowSurface.blit(score.image, (10, 10))
 
     controller.update()
     windowSurface.blit(controller.menu_bar, (100, screen_size[1] - 250))
-    
+
+    if score.points > 0:
+        rock_delay = 4000
+    if score.points > 8:
+        rock_delay = 3000
+    if score.points > 16:
+        rock_delay = 2000
+    if score.points > 24:
+        rock_delay = 1000
+    if score.points > 32:
+        rock_delay = 500
+
     rock_group.update()
     rock_current_time =  pygame.time.get_ticks() - rock_start
     if rock_current_time > rock_delay:
@@ -220,6 +226,9 @@ while True:
         if ship_rect.colliderect(rock.rect):
            # windowSurface.fill((255, 0, 0))
             score.points = 0
+            rock_group.empty()
+            center = (screen_size[0] /2, screen_size[1] / 2)
+            rock_delay = 3000
         for bullet in bullet_group:
             if bullet.rect.colliderect(rock.rect):
                 bullet_group.remove(bullet)
