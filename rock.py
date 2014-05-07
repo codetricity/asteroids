@@ -12,6 +12,9 @@ class Rock(pygame.sprite.Sprite):
         self.center = [self.size/2, self.size/2]
         self.screencenter = [800/2, 600/2]
         self.image = pygame.Surface((self.size, self.size))
+        self.image.fill((0, 0, 0))
+        self.image.set_colorkey((0,0,0))
+
         self.safe_zone = 150
         self.draw()
         self.place()

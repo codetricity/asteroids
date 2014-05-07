@@ -229,6 +229,7 @@ while True:
             rock_group.empty()
             center = (screen_size[0] /2, screen_size[1] / 2)
             rock_delay = 3000
+            direction = "stop"
         for bullet in bullet_group:
             if bullet.rect.colliderect(rock.rect):
                 bullet_group.remove(bullet)
