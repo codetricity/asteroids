@@ -224,12 +224,13 @@ while True:
 
     for rock in rock_group:
         if ship_rect.colliderect(rock.rect):
-           # windowSurface.fill((255, 0, 0))
+            score.screen(windowSurface)
             score.points = 0
             rock_group.empty()
             center = (screen_size[0] /2, screen_size[1] / 2)
             rock_delay = 3000
             direction = "stop"
+            forward = False
         for bullet in bullet_group:
             if bullet.rect.colliderect(rock.rect):
                 bullet_group.remove(bullet)
