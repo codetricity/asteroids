@@ -40,8 +40,8 @@ windowSurface = pygame.display.set_mode(screen_size)
 fire_snd = mixer.Sound("snd/fire.wav")
 thrust_snd = mixer.Sound('snd/thrust.wav')
 bang_large = mixer.Sound("snd/banglarge.wav")
-bang_medium = mixer.Sound("snd/bangMedium.wav")
-bang_small = mixer.Sound("snd/bangSmall.wav")
+bang_medium = mixer.Sound("snd/bangmedium.wav")
+bang_small = mixer.Sound("snd/bangsmall.wav")
 
 clock = pygame.time.Clock()
 FPS = 30
