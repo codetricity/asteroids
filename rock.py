@@ -57,3 +57,13 @@ class Rock(pygame.sprite.Sprite):
         elif self.direction == "leftup":
             self.rect.centery -= self.speed
             self.rect.centerx -= self.speed
+
+        if self.rect.centerx > 800:
+            self.rect.centerx = 0
+        if self.rect.centerx < 0:
+            self.rect.centerx = 800
+        if self.rect.centery > 600:
+            self.rect.centery = 0
+        if self.rect.centery < 0:
+            self.rect.centery = 600
+
