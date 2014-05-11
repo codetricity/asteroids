@@ -11,6 +11,7 @@ class Score():
         self.points = 0
         self.score_font = pygame.font.Font("fnt/animeace2_reg.ttf", 20)
         self.score_text = "SCORE: "
+        self.show_screen = False
         self.update()
 
 
@@ -40,7 +41,8 @@ class Score():
             self.congrats_text = "Better luck next time."
         self.scorefile.close()
 
-    def screen(self, surface):
+    def make_screen(self, surface):
+        self.make_screen_time_stamp = pygame.time.get_ticks()
         self.load()
         self.write()
         self.player_score = "Your score: {}".format(self.points)
@@ -51,29 +53,23 @@ class Score():
 
         self.play_again_surface = self.score_font.render("Play Again?", True, self.WHITE)
         self.play_again_rect = self.play_again_surface.get_rect(center = (150, 450))
+        self.play_again_collide = pygame.Rect(0,0, 200, 200)
+        self.play_again_collide.center = self.play_again_rect.center
 
         self.quit_surface = self.score_font.render("Quit", True, self.WHITE)
         self.quit_center = (450, 450)
         self.quit_rect = self.quit_surface.get_rect(center = self.quit_center)
+        self.quit_collide = pygame.Rect(0,0, 200, 200)
+        self.quit_collide.center = self.quit_center
 
 
-        while True:
-            event = pygame.event.poll()
-            pos = pygame.mouse.get_pos()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    break
-            if self.play_again_rect.collidepoint(pos):
-                break
-            if self.quit_rect.collidepoint(pos):
-                pygame.quit()
-                sys.exit()
-            surface.fill((0,0,0))
-            surface.blit(self.p_score_surface, (100, 100))
-            surface.blit(self.h_score_surface, (100, 200))
-            surface.blit(self.congrats_surface, (100, 260))
-            pygame.draw.circle(surface, self.WHITE, self.play_again_rect.center, 100, 1)
-            quit_rect = pygame.draw.circle(surface, self.WHITE, self.quit_center, 100, 1)
-            surface.blit(self.play_again_surface, self.play_again_rect)
-            surface.blit(self.quit_surface, self.quit_rect)
-            pygame.display.update()
+
+        surface.fill((0,0,0))
+        surface.blit(self.p_score_surface, (100, 100))
+        surface.blit(self.h_score_surface, (100, 200))
+        surface.blit(self.congrats_surface, (100, 260))
+        pygame.draw.circle(surface, self.WHITE, self.play_again_rect.center, 100, 1)
+        pygame.draw.circle(surface, self.WHITE, self.quit_center, 100, 1)
+        surface.blit(self.play_again_surface, self.play_again_rect)
+        surface.blit(self.quit_surface, self.quit_rect)
+        pygame.display.update()
