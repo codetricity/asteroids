@@ -12,6 +12,11 @@ try:
 except ImportError:
     android = None
 
+try:
+    import pygame.mixer as mixer
+except ImportError:
+    import android.mixer as mixer
+
 if android:
     android.init()
     android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
@@ -32,6 +37,11 @@ rock_delay = 3000
 screen_size = (800, 600)
 windowSurface = pygame.display.set_mode(screen_size)
 
+fire_snd = mixer.Sound("snd/fire.wav")
+thrust_snd = mixer.Sound('snd/thrust.wav')
+bang_large = mixer.Sound("snd/banglarge.wav")
+bang_medium = mixer.Sound("snd/bangMedium.wav")
+bang_small = mixer.Sound("snd/bangSmall.wav")
 
 clock = pygame.time.Clock()
 FPS = 30
@@ -82,6 +92,7 @@ while True:
                 fume = True
             elif controller.fire_pos.collidepoint(pos):
                 fire = True
+                fire_snd.play()
 
         if event.type == pygame.MOUSEBUTTONUP:
             direction = "stop"
@@ -181,6 +192,7 @@ while True:
         thrust_elapsed = pygame.time.get_ticks() - thrust_start
         if thrust_elapsed < 10000:
             center = [x_motion, y_motion]
+
             if thrust_elapsed > 3000:
                 ship_speed_brake = 14
             if thrust_elapsed > 7000:
@@ -188,6 +200,7 @@ while True:
         
     if fume == True:
         pygame.draw.circle(windowSurface, ORANGE, (thrust_x, thrust_y), fume_size, 2)
+        thrust_snd.play()
         
     if center[0] > screen_size[0]:
         center[0] = 0
@@ -235,6 +248,13 @@ while True:
             if bullet.rect.colliderect(rock.rect):
                 bullet_group.remove(bullet)
                 score.points = score.points + 1
+                if rock.size == 100:
+                    bang_large.play()
+                if rock.size == 50:
+                    bang_medium.play()
+                else:
+                    bang_small.play()
+
                 if rock.size > 20:
                     new_rock = Rock(rock.size/2)
                     new_rock.rect.center = rock.rect.center
